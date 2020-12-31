@@ -13,7 +13,7 @@
         <th>Last name</th>
         <th>Address</th>
         <th>Year</th>
-        <th>Operations</th>
+        <th>Actions</th>
     </tr>
 
     <c:forEach var="user" items="${allUsers}">

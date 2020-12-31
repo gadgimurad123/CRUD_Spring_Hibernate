@@ -30,6 +30,7 @@ public class MyController {
     public String addNewUser(Model model) {
 
         User user = new User();
+
         model.addAttribute("user", user);
 
         return "user-info";
