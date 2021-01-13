@@ -1,10 +1,14 @@
 package com.gaz.web.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.hibernate.cfg.Environment;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -15,19 +19,50 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = "com.gaz.web")
 @EnableWebMvc
 @EnableTransactionManagement
+@PropertySource("classpath:myApp.properties")
 public class MyConfig {
+
+    @Value("${prefixViewRes}")
+    private String prefixViewRes;
+
+    @Value("${suffixViewRes}")
+    private String suffixViewRes;
+
+    @Value("${driverClass}")
+    private String driverClass;
+
+    @Value("${jdbcUrl}")
+    private String jdbcUrl;
+
+    @Value("${user}")
+    private String user;
+
+    @Value("${pass}")
+    private String pass;
+
+    @Value("${packToScan}")
+    private String packToScan;
+
+    @Value("${hibernateDialect}")
+    private String hibernateDialect;
+
+    @Value("${hibernateShowSql}")
+    private String hibernateShowSql;
 
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
-        internalResourceViewResolver.setPrefix("/WEB-INF/view/");
-        internalResourceViewResolver.setSuffix(".jsp");
+        internalResourceViewResolver.setPrefix(prefixViewRes);
+        internalResourceViewResolver.setSuffix(suffixViewRes);
         return internalResourceViewResolver;
     }
 
@@ -35,10 +70,10 @@ public class MyConfig {
     public DataSource dataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/my_db?useSSL=false&serverTimezone=UTC");
-            dataSource.setUser("bestuser");
-            dataSource.setPassword("bestuser");
+            dataSource.setDriverClass(driverClass);
+            dataSource.setJdbcUrl(jdbcUrl);
+            dataSource.setUser(user);
+            dataSource.setPassword(pass);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
@@ -58,11 +93,11 @@ public class MyConfig {
         entityManagerFactoryBean.setJpaVendorAdapter(vendorAdaptor());
         entityManagerFactoryBean.setDataSource(dataSource());
         entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-        entityManagerFactoryBean.setPackagesToScan("com.gaz.web");
+        entityManagerFactoryBean.setPackagesToScan(packToScan);
 
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        hibernateProperties.setProperty("hibernate.show_sql", "true");
+        hibernateProperties.setProperty("hibernate.dialect", hibernateDialect);
+        hibernateProperties.setProperty("hibernate.show_sql", hibernateShowSql);
 
         entityManagerFactoryBean.setJpaProperties(hibernateProperties);
 
