@@ -1,9 +1,7 @@
 package com.gaz.web.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.hibernate.cfg.Environment;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,17 +17,14 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = "com.gaz.web")
 @EnableWebMvc
 @EnableTransactionManagement
-@PropertySource("classpath:myApp.properties")
-public class MyConfig {
+@PropertySource("classpath:app.properties")
+public class AppConfig {
 
     @Value("${prefixViewRes}")
     private String prefixViewRes;

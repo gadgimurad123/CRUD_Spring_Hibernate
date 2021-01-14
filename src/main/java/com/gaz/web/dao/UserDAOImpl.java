@@ -1,7 +1,6 @@
 package com.gaz.web.dao;
 
 import com.gaz.web.entity.User;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -21,20 +20,20 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void saveUser(User user) {
-        Session session = (Session) entityManager.getDelegate();
-        session.saveOrUpdate(user);
+        if (user.getId() == 0) {
+            entityManager.persist(user);
+        } else {
+            entityManager.merge(user);
+        }
     }
 
     @Override
     public User getUser(int id) {
-        Session session = (Session) entityManager.getDelegate();
-        return session.get(User.class, id);
+        return entityManager.find(User.class, id);
     }
 
     @Override
     public void deleteUser(int id) {
-        Session session = (Session) entityManager.getDelegate();
-        User user = getUser(id);
-        session.delete(user);
+        entityManager.remove(getUser(id));
     }
 }
